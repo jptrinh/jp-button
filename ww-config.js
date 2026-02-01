@@ -5,7 +5,6 @@ const INFO = {
 };
 
 export default {
-    inherit: 'ww-text',
     options: {
         autoByContent: true,
         displayAllowedValues: ['flex', 'inline-flex'],
@@ -55,7 +54,7 @@ export default {
             };
         },
     },
-    states: ['focus', 'disabled', 'active'],
+    states: ['focus', 'disabled', 'active', 'loading'],
     triggerEvents: [
         { name: 'focus', label: { en: 'On focus' }, event: null },
         { name: 'blur', label: { en: 'On blur' }, event: null },
@@ -63,27 +62,6 @@ export default {
         { name: 'keyup', label: { en: 'On key up' }, event: null },
     ],
     properties: {
-        backgroundColor: {
-            label: {
-                en: 'Text Background',
-                fr: 'Background du Texte',
-            },
-            type: 'Color',
-            options: {
-                nullable: true,
-            },
-            bindable: true,
-            responsive: true,
-            states: true,
-            classes: true,
-            /* wwEditor:start */
-            bindingValidation: {
-                cssSupports: 'color',
-                type: 'string',
-                tooltip: 'A string that represents a color code: `"rebeccapurple" | "#00ff00" | "rgb(214, 122, 127)"`',
-            },
-            /* wwEditor:end */
-        },
         buttonType: {
             label: {
                 en: 'Type',
@@ -105,6 +83,22 @@ export default {
                 tooltip: 'A string that defines the button type: `"button" | "submit"`',
             },
         },
+        form: {
+            label: { en: 'Form ID' },
+            type: 'Text',
+            section: 'settings',
+            bindable: true,
+            hidden: content => content?.buttonType !== 'submit',
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'string',
+                tooltip: 'The ID of the form to submit (allows submitting a form from outside its container)',
+            },
+            propertyHelp: {
+                tooltip: 'Enter the ID of the form this button should submit. This allows the button to work even when placed outside the form element.',
+            },
+            /* wwEditor:end */
+        },
         disabled: {
             label: { en: 'Disabled' },
             type: 'OnOff',
@@ -118,23 +112,22 @@ export default {
             },
             /* wwEditor:end */
         },
-        hasLeftIcon: {
-            label: { en: 'Left icon', fr: 'Icône gauche' },
-            section: 'settings',
-            type: 'OnOff',
-        },
-        leftIcon: {
-            hidden: true,
-            isArray: false,
-        },
-        hasRightIcon: {
-            label: { en: 'Right icon', fr: 'Icône droite' },
+        isLoading: {
+            label: { en: 'Loading' },
             type: 'OnOff',
             section: 'settings',
+            defaultValue: false,
+            bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'boolean',
+                tooltip: 'A boolean that defines if the button is in loading state: `true | false`',
+            },
+            /* wwEditor:end */
         },
-        rightIcon: {
+        buttonContent: {
             hidden: true,
-            isArray: false,
+            defaultValue: [],
         },
     },
 };
