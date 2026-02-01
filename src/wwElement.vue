@@ -246,6 +246,7 @@ Access via: \`context.local.data?.['button']?.isLoading\``;
 .ww-button {
     justify-content: center;
     align-items: center;
+    cursor: pointer;
     &.button {
         outline: none;
         border: none;
