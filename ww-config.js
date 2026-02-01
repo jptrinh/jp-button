@@ -5,7 +5,6 @@ const INFO = {
 };
 
 export default {
-    inherit: 'ww-text',
     options: {
         autoByContent: true,
         displayAllowedValues: ['flex', 'inline-flex'],
@@ -55,7 +54,7 @@ export default {
             };
         },
     },
-    states: ['focus', 'disabled', 'active'],
+    states: ['focus', 'disabled', 'active', 'loading'],
     triggerEvents: [
         { name: 'focus', label: { en: 'On focus' }, event: null },
         { name: 'blur', label: { en: 'On blur' }, event: null },
@@ -105,6 +104,22 @@ export default {
                 tooltip: 'A string that defines the button type: `"button" | "submit"`',
             },
         },
+        form: {
+            label: { en: 'Form ID' },
+            type: 'Text',
+            section: 'settings',
+            bindable: true,
+            hidden: content => content?.buttonType !== 'submit',
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'string',
+                tooltip: 'The ID of the form to submit (allows submitting a form from outside its container)',
+            },
+            propertyHelp: {
+                tooltip: 'Enter the ID of the form this button should submit. This allows the button to work even when placed outside the form element.',
+            },
+            /* wwEditor:end */
+        },
         disabled: {
             label: { en: 'Disabled' },
             type: 'OnOff',
@@ -118,10 +133,30 @@ export default {
             },
             /* wwEditor:end */
         },
+        isLoading: {
+            label: { en: 'Loading' },
+            type: 'OnOff',
+            section: 'settings',
+            defaultValue: false,
+            bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'boolean',
+                tooltip: 'A boolean that defines if the button is in loading state: `true | false`',
+            },
+            /* wwEditor:end */
+        },
         hasLeftIcon: {
             label: { en: 'Left icon', fr: 'Icône gauche' },
             section: 'settings',
             type: 'OnOff',
+            bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'boolean',
+                tooltip: 'A boolean that defines if the left icon is shown: `true | false`',
+            },
+            /* wwEditor:end */
         },
         leftIcon: {
             hidden: true,
@@ -131,10 +166,21 @@ export default {
             label: { en: 'Right icon', fr: 'Icône droite' },
             type: 'OnOff',
             section: 'settings',
+            bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'boolean',
+                tooltip: 'A boolean that defines if the right icon is shown: `true | false`',
+            },
+            /* wwEditor:end */
         },
         rightIcon: {
             hidden: true,
             isArray: false,
+        },
+        buttonContent: {
+            hidden: true,
+            defaultValue: [],
         },
     },
 };

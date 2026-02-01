@@ -4,7 +4,7 @@
         class="ww-button"
         :class="{ button: tag, '-link': hasLink && !isEditing, active: isActive }"
         :type="buttonType"
-        :style="buttonStyle"
+        :form="formAttribute"
         :data-ww-flag="'btn-' + content.buttonType"
         :disabled="content.disabled"
         v-bind="properties"
@@ -23,20 +23,13 @@
         @keydown="onKeyDown"
         @keyup="onKeyUp"
     >
-        <wwElement v-if="content.hasLeftIcon && content.leftIcon" v-bind="content.leftIcon"></wwElement>
-        <wwText tag="span" :text="text"></wwText>
-        <wwElement v-if="content.hasRightIcon && content.rightIcon" v-bind="content.rightIcon"></wwElement>
+        <wwLayout path="buttonContent" direction="row" class="button-content" />
     </component>
 </template>
 
 <script>
 import { computed } from 'vue';
-const TEXT_ALIGN_TO_JUSTIFY = {
-    center: 'center',
-    right: 'flex-end',
-    left: 'flex-start',
-    justify: 'center',
-};
+
 export default {
     props: {
         content: { type: Object, required: true },
@@ -66,6 +59,23 @@ export default {
         } = wwLib.wwElement.useLink({
             isDisabled: computed(() => props.content.disabled),
         });
+
+        // Expose button state as local variables
+        const localData = computed(() => ({
+            hasLeftIcon: props.content?.hasLeftIcon || false,
+            hasRightIcon: props.content?.hasRightIcon || false,
+            isLoading: props.content?.isLoading || false,
+        }));
+
+        const markdown = `### Button Local Variables
+- \`hasLeftIcon\`: Boolean - is left icon enabled
+- \`hasRightIcon\`: Boolean - is right icon enabled
+- \`isLoading\`: Boolean - is button in loading state
+
+Access via: \`context.local.data?.['button']?.isLoading\``;
+
+        wwLib.wwElement.useRegisterElementLocalContext('button', localData, {}, markdown);
+
         return {
             /* wwEditor:start */
             createElement,
@@ -83,11 +93,6 @@ export default {
         };
     },
     computed: {
-        buttonStyle() {
-            return {
-                justifyContent: TEXT_ALIGN_TO_JUSTIFY[this.content['_ww-text_textAlign']] || 'center',
-            };
-        },
         isEditing() {
             /* wwEditor:start */
             return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
@@ -118,8 +123,9 @@ export default {
                 return this.content.buttonType;
             return '';
         },
-        text() {
-            return this.wwElementState.props.text;
+        formAttribute() {
+            if (this.buttonType !== 'submit') return null;
+            return this.content?.form || null;
         },
         isFocused() {
             /* wwEditor:start */
@@ -170,6 +176,16 @@ export default {
                     this.$emit('add-state', 'disabled');
                 } else {
                     this.$emit('remove-state', 'disabled');
+                }
+            },
+        },
+        'content.isLoading': {
+            immediate: true,
+            handler(value) {
+                if (value) {
+                    this.$emit('add-state', 'loading');
+                } else {
+                    this.$emit('remove-state', 'loading');
                 }
             },
         },
@@ -274,5 +290,13 @@ export default {
     &.-link {
         cursor: pointer;
     }
+}
+
+.button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
 }
 </style>
