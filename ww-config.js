@@ -62,27 +62,6 @@ export default {
         { name: 'keyup', label: { en: 'On key up' }, event: null },
     ],
     properties: {
-        backgroundColor: {
-            label: {
-                en: 'Text Background',
-                fr: 'Background du Texte',
-            },
-            type: 'Color',
-            options: {
-                nullable: true,
-            },
-            bindable: true,
-            responsive: true,
-            states: true,
-            classes: true,
-            /* wwEditor:start */
-            bindingValidation: {
-                cssSupports: 'color',
-                type: 'string',
-                tooltip: 'A string that represents a color code: `"rebeccapurple" | "#00ff00" | "rgb(214, 122, 127)"`',
-            },
-            /* wwEditor:end */
-        },
         buttonType: {
             label: {
                 en: 'Type',
@@ -145,38 +124,6 @@ export default {
                 tooltip: 'A boolean that defines if the button is in loading state: `true | false`',
             },
             /* wwEditor:end */
-        },
-        hasLeftIcon: {
-            label: { en: 'Left icon', fr: 'Icône gauche' },
-            section: 'settings',
-            type: 'OnOff',
-            bindable: true,
-            /* wwEditor:start */
-            bindingValidation: {
-                type: 'boolean',
-                tooltip: 'A boolean that defines if the left icon is shown: `true | false`',
-            },
-            /* wwEditor:end */
-        },
-        leftIcon: {
-            hidden: true,
-            isArray: false,
-        },
-        hasRightIcon: {
-            label: { en: 'Right icon', fr: 'Icône droite' },
-            type: 'OnOff',
-            section: 'settings',
-            bindable: true,
-            /* wwEditor:start */
-            bindingValidation: {
-                type: 'boolean',
-                tooltip: 'A boolean that defines if the right icon is shown: `true | false`',
-            },
-            /* wwEditor:end */
-        },
-        rightIcon: {
-            hidden: true,
-            isArray: false,
         },
         buttonContent: {
             hidden: true,

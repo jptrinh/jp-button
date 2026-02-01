@@ -49,9 +49,6 @@ export default {
         'trigger-event',
     ],
     setup(props) {
-        /* wwEditor:start */
-        const { createElement } = wwLib.useCreateElement();
-        /* wwEditor:end */
         const {
             hasLink,
             tag: linkTag,
@@ -62,14 +59,10 @@ export default {
 
         // Expose button state as local variables
         const localData = computed(() => ({
-            hasLeftIcon: props.content?.hasLeftIcon || false,
-            hasRightIcon: props.content?.hasRightIcon || false,
             isLoading: props.content?.isLoading || false,
         }));
 
         const markdown = `### Button Local Variables
-- \`hasLeftIcon\`: Boolean - is left icon enabled
-- \`hasRightIcon\`: Boolean - is right icon enabled
 - \`isLoading\`: Boolean - is button in loading state
 
 Access via: \`context.local.data?.['button']?.isLoading\``;
@@ -77,9 +70,6 @@ Access via: \`context.local.data?.['button']?.isLoading\``;
         wwLib.wwElement.useRegisterElementLocalContext('button', localData, {}, markdown);
 
         return {
-            /* wwEditor:start */
-            createElement,
-            /* wwEditor:end */
             hasLink,
             linkTag,
             properties,
@@ -145,30 +135,6 @@ Access via: \`context.local.data?.['button']?.isLoading\``;
         },
     },
     watch: {
-        /* wwEditor:start */
-        'content.hasRightIcon': {
-            async handler(hasRightIcon) {
-                if (this.wwEditorState.isACopy) {
-                    return;
-                }
-                if (hasRightIcon && !this.content.rightIcon) {
-                    const content = await this.createElement('ww-icon');
-                    this.$emit('update:content:effect', { rightIcon: content });
-                }
-            },
-        },
-        'content.hasLeftIcon': {
-            async handler(hasLeftIcon) {
-                if (this.wwEditorState.isACopy) {
-                    return;
-                }
-                if (hasLeftIcon && !this.content.leftIcon) {
-                    const content = await this.createElement('ww-icon');
-                    this.$emit('update:content:effect', { leftIcon: content });
-                }
-            },
-        },
-        /* wwEditor:end */
         'content.disabled': {
             immediate: true,
             handler(value) {
