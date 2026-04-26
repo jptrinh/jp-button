@@ -135,7 +135,6 @@ Access via: \`context.local.data?.['button']?.isLoading\``;
         },
         buttonContentStyle() {
             return {
-                rowGap: this.content?.rowGap || '0px',
                 columnGap: this.content?.columnGap || '0px',
             };
         },

@@ -126,31 +126,6 @@ export default {
             },
             /* wwEditor:end */
         },
-        rowGap: {
-            label: { en: 'Row gap' },
-            type: 'Length',
-            section: 'style',
-            options: {
-                unitChoices: [
-                    { value: 'px', label: 'px', min: 0, max: 200 },
-                    { value: 'rem', label: 'rem', min: 0, max: 10 },
-                    { value: '%', label: '%', min: 0, max: 100 },
-                ],
-                noRange: true,
-                useVar: true,
-            },
-            defaultValue: '0px',
-            bindable: true,
-            responsive: true,
-            states: true,
-            classes: true,
-            /* wwEditor:start */
-            bindingValidation: {
-                type: 'string',
-                tooltip: 'Gap between rows (e.g. "8px", "1rem")',
-            },
-            /* wwEditor:end */
-        },
         columnGap: {
             label: { en: 'Column gap' },
             type: 'Length',
