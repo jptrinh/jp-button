@@ -23,7 +23,7 @@
         @keydown="onKeyDown"
         @keyup="onKeyUp"
     >
-        <wwLayout path="buttonContent" direction="row" class="button-content" ww-responsive="wwLayout" />
+        <wwLayout path="buttonContent" direction="row" class="button-content" :style="buttonContentStyle" />
     </component>
 </template>
 
@@ -132,6 +132,11 @@ Access via: \`context.local.data?.['button']?.isLoading\``;
             }
             /* wwEditor:end */
             return this.isReallyActive;
+        },
+        buttonContentStyle() {
+            return {
+                columnGap: this.content?.columnGap || '0px',
+            };
         },
     },
     watch: {

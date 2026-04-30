@@ -10,7 +10,6 @@ export default {
         displayAllowedValues: ['flex', 'inline-flex'],
         linkable: true,
     },
-    inherit: [{ type: 'ww-layout' }],
     editor: {
         label: {
             en: 'Button',
@@ -124,6 +123,31 @@ export default {
             bindingValidation: {
                 type: 'boolean',
                 tooltip: 'A boolean that defines if the button is in loading state: `true | false`',
+            },
+            /* wwEditor:end */
+        },
+        columnGap: {
+            label: { en: 'Column gap' },
+            type: 'Length',
+            section: 'style',
+            options: {
+                unitChoices: [
+                    { value: 'px', label: 'px', min: 0, max: 200 },
+                    { value: 'rem', label: 'rem', min: 0, max: 10 },
+                    { value: '%', label: '%', min: 0, max: 100 },
+                ],
+                noRange: true,
+                useVar: true,
+            },
+            defaultValue: '0px',
+            bindable: true,
+            responsive: true,
+            states: true,
+            classes: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'string',
+                tooltip: 'Gap between columns (e.g. "8px", "1rem")',
             },
             /* wwEditor:end */
         },
