@@ -1,25 +1,35 @@
 <template>
-    <component :is="tag" class="ww-button" :class="{ button: tag, '-link': hasLink && !isEditing, active: isActive }"
-        :type="buttonType" :style="buttonStyle" :data-ww-flag="'btn-' + content.buttonType" :disabled="content.disabled"
-        v-bind="properties" @focus="isReallyFocused = true" @blur="onBlur($event)" @mousedown="onMouseActivate"
-        @mouseup="onMouseDeactivate" @mouseleave="onMouseDeactivate" @touchstart="onTouchActivate"
-        @touchend="onTouchDeactivate" @touchcancel="onTouchDeactivate" @keydown.enter="onKeyActivate"
-        @keydown.space="onKeyActivate" @keyup.enter="onKeyDeactivate" @keyup.space="onKeyDeactivate"
-        @keydown="onKeyDown" @keyup="onKeyUp">
-        <wwElement v-if="content.hasLeftIcon && content.leftIcon" v-bind="content.leftIcon"></wwElement>
-        <wwText tag="span" :text="text"></wwText>
-        <wwElement v-if="content.hasRightIcon && content.rightIcon" v-bind="content.rightIcon"></wwElement>
+    <component
+        :is="tag"
+        class="ww-button"
+        :class="{ button: tag, '-link': hasLink && !isEditing, active: isActive }"
+        :type="buttonType"
+        :form="formAttribute"
+        :data-ww-flag="'btn-' + content.buttonType"
+        :disabled="content.disabled"
+        v-bind="properties"
+        @focus="isReallyFocused = true"
+        @blur="onBlur($event)"
+        @mousedown="onMouseActivate"
+        @mouseup="onMouseDeactivate"
+        @mouseleave="onMouseDeactivate"
+        @touchstart="onTouchActivate"
+        @touchend="onTouchDeactivate"
+        @touchcancel="onTouchDeactivate"
+        @keydown.enter="onKeyActivate"
+        @keydown.space="onKeyActivate"
+        @keyup.enter="onKeyDeactivate"
+        @keyup.space="onKeyDeactivate"
+        @keydown="onKeyDown"
+        @keyup="onKeyUp"
+    >
+        <wwLayout path="buttonContent" direction="row" class="button-content" />
     </component>
 </template>
 
 <script>
 import { computed } from 'vue';
-const TEXT_ALIGN_TO_JUSTIFY = {
-    center: 'center',
-    right: 'flex-end',
-    left: 'flex-start',
-    justify: 'center',
-};
+
 export default {
     props: {
         content: { type: Object, required: true },
@@ -39,9 +49,6 @@ export default {
         'trigger-event',
     ],
     setup(props) {
-        /* wwEditor:start */
-        const { createElement } = wwLib.useCreateElement();
-        /* wwEditor:end */
         const {
             hasLink,
             tag: linkTag,
@@ -49,10 +56,20 @@ export default {
         } = wwLib.wwElement.useLink({
             isDisabled: computed(() => props.content.disabled),
         });
+
+        // Expose button state as local variables
+        const localData = computed(() => ({
+            isLoading: props.content?.isLoading || false,
+        }));
+
+        const markdown = `### Button Local Variables
+- \`isLoading\`: Boolean - is button in loading state
+
+Access via: \`context.local.data?.['button']?.isLoading\``;
+
+        wwLib.wwElement.useRegisterElementLocalContext('button', localData, {}, markdown);
+
         return {
-            /* wwEditor:start */
-            createElement,
-            /* wwEditor:end */
             hasLink,
             linkTag,
             properties,
@@ -66,11 +83,6 @@ export default {
         };
     },
     computed: {
-        buttonStyle() {
-            return {
-                justifyContent: TEXT_ALIGN_TO_JUSTIFY[this.content['_ww-text_textAlign']] || 'center',
-            };
-        },
         isEditing() {
             /* wwEditor:start */
             return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
@@ -101,8 +113,9 @@ export default {
                 return this.content.buttonType;
             return '';
         },
-        text() {
-            return this.wwElementState.props.text;
+        formAttribute() {
+            if (this.buttonType !== 'submit') return null;
+            return this.content?.form || null;
         },
         isFocused() {
             /* wwEditor:start */
@@ -122,38 +135,6 @@ export default {
         },
     },
     watch: {
-        /* wwEditor:start */
-        'content.hasRightIcon': {
-            async handler(hasRightIcon) {
-                if (this.wwEditorState.isACopy) {
-                    return;
-                }
-                if (hasRightIcon && !this.content.rightIcon?.isWwObject) {
-                    const content = await this.createElement('ww-icon', {
-                        content: {
-                            color: "#000000", icon: "lucide/plus"
-                        },
-                    });
-                    this.$emit('update:content:effect', { rightIcon: content });
-                }
-            },
-        },
-        'content.hasLeftIcon': {
-            async handler(hasLeftIcon) {
-                if (this.wwEditorState.isACopy) {
-                    return;
-                }
-                if (hasLeftIcon && !this.content.leftIcon?.isWwObject) {
-                    const content = await this.createElement('ww-icon', {
-                        content: {
-                            color: "#000000", icon: "lucide/plus"
-                        },
-                    });
-                    this.$emit('update:content:effect', { leftIcon: content });
-                }
-            },
-        },
-        /* wwEditor:end */
         'content.disabled': {
             immediate: true,
             handler(value) {
@@ -161,6 +142,16 @@ export default {
                     this.$emit('add-state', 'disabled');
                 } else {
                     this.$emit('remove-state', 'disabled');
+                }
+            },
+        },
+        'content.isLoading': {
+            immediate: true,
+            handler(value) {
+                if (value) {
+                    this.$emit('add-state', 'loading');
+                } else {
+                    this.$emit('remove-state', 'loading');
                 }
             },
         },
@@ -255,7 +246,7 @@ export default {
 .ww-button {
     justify-content: center;
     align-items: center;
-
+    cursor: pointer;
     &.button {
         outline: none;
         border: none;
@@ -263,9 +254,16 @@ export default {
         font-family: inherit;
         font-size: inherit;
     }
-
     &.-link {
         cursor: pointer;
     }
+}
+
+.button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
 }
 </style>
